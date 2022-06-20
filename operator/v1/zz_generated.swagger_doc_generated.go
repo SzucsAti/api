@@ -632,8 +632,8 @@ func (HostNetworkStrategy) SwaggerDoc() map[string]string {
 }
 
 var map_IBMLoadBalancerParameters = map[string]string{
-	"":        "IBMLoadBalancerParameters provides configuration settings that are specific to IBM load balancers.",
-	"subnets": "Subnets is the list of subnets that the Load balancer is attached to. See https://cloud.ibm.com/docs/containers?topic=containers-vpc-lbaas (service.kubernetes.io/ibm-load-balancer-cloud-provider-vpc-subnets)",
+	"":        "IBMLoadBalancerParameters provides configuration settings that are specific to IBM Cloud load balancers.",
+	"subnets": "subnets is the list of subnet ids that the load balancer is attached to. See IBM Cloud documentation https://cloud.ibm.com/docs/containers?topic=containers-vpc-lbaas specifically \"service.kubernetes.io/ibm-load-balancer-cloud-provider-vpc-subnets\" annotation",
 }
 
 func (IBMLoadBalancerParameters) SwaggerDoc() map[string]string {
@@ -840,10 +840,10 @@ func (PrivateStrategy) SwaggerDoc() map[string]string {
 
 var map_ProviderLoadBalancerParameters = map[string]string{
 	"":     "ProviderLoadBalancerParameters holds desired load balancer information specific to the underlying infrastructure provider.",
-	"type": "type is the underlying infrastructure provider for the load balancer. Allowed values are \"AWS\", \"Azure\", \"BareMetal\", \"GCP\", \"Nutanix\", \"OpenStack\", and \"VSphere\".",
+	"type": "type is the underlying infrastructure provider for the load balancer. Allowed values are \"AWS\", \"Azure\", \"BareMetal\", \"GCP\", \"IBM\", \"Nutanix\", \"OpenStack\", and \"VSphere\".",
 	"aws":  "aws provides configuration settings that are specific to AWS load balancers.\n\nIf empty, defaults will be applied. See specific aws fields for details about their defaults.",
 	"gcp":  "gcp provides configuration settings that are specific to GCP load balancers.\n\nIf empty, defaults will be applied. See specific gcp fields for details about their defaults.",
-	"ibm":  "ibm provides configuration settings that are specific to IBM Cloud load balancers.\n\nIf empty, defaults will be applied. See specific gcp fields for details about their defaults.",
+	"ibm":  "ibm provides configuration settings that are specific to IBM Cloud load balancers.\n\nIf empty, defaults will be applied. See specific ibm fields for details about their defaults.",
 }
 
 func (ProviderLoadBalancerParameters) SwaggerDoc() map[string]string {

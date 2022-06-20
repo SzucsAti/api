@@ -391,7 +391,7 @@ type LoadBalancerStrategy struct {
 // +union
 type ProviderLoadBalancerParameters struct {
 	// type is the underlying infrastructure provider for the load balancer.
-	// Allowed values are "AWS", "Azure", "BareMetal", "GCP", "Nutanix",
+	// Allowed values are "AWS", "Azure", "BareMetal", "GCP", "IBM", "Nutanix",
 	// "OpenStack", and "VSphere".
 	//
 	// +unionDiscriminator
@@ -420,7 +420,7 @@ type ProviderLoadBalancerParameters struct {
 	// ibm provides configuration settings that are specific to IBM Cloud
 	// load balancers.
 	//
-	// If empty, defaults will be applied. See specific gcp fields for
+	// If empty, defaults will be applied. See specific ibm fields for
 	// details about their defaults.
 	//
 	// +optional
@@ -428,7 +428,7 @@ type ProviderLoadBalancerParameters struct {
 }
 
 // LoadBalancerProviderType is the underlying infrastructure provider for the
-// load balancer. Allowed values are "AWS", "Azure", "BareMetal", "GCP", "Nutanix",
+// load balancer. Allowed values are "AWS", "Azure", "BareMetal", "GCP", "IBM", "Nutanix",
 // "OpenStack", and "VSphere".
 //
 // +kubebuilder:validation:Enum=AWS;Azure;BareMetal;GCP;Nutanix;OpenStack;VSphere;IBM
@@ -526,11 +526,12 @@ const (
 )
 
 // IBMLoadBalancerParameters provides configuration settings that are
-// specific to IBM load balancers.
+// specific to IBM Cloud load balancers.
 type IBMLoadBalancerParameters struct {
-	// Subnets is the list of subnets that the Load balancer is attached to.
-	// See https://cloud.ibm.com/docs/containers?topic=containers-vpc-lbaas
-	// (service.kubernetes.io/ibm-load-balancer-cloud-provider-vpc-subnets)
+	// subnets is the list of subnet ids that the load balancer is attached to.
+	// See IBM Cloud documentation
+	// https://cloud.ibm.com/docs/containers?topic=containers-vpc-lbaas
+	// specifically "service.kubernetes.io/ibm-load-balancer-cloud-provider-vpc-subnets" annotation
 	//
 	// +optional
 	Subnets string `json:"subnets,omitempty"`
