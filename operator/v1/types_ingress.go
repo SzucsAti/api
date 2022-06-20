@@ -528,10 +528,13 @@ const (
 // IBMLoadBalancerParameters provides configuration settings that are
 // specific to IBM Cloud load balancers.
 type IBMLoadBalancerParameters struct {
-	// subnets is the list of subnet ids that the load balancer is attached to.
-	// See IBM Cloud documentation
+	// subnets is the comma-separated list of subnets that the load balancer is attached to.
+	//
+	// It is used to specify one or more subnets in one zone that the VPC load balancer deploys to.
+	// Values can be specified as VPC subnet IDs, VPC subnet names, or VPC subnet CIDRs.
+	//
+	// See "service.kubernetes.io/ibm-load-balancer-cloud-provider-vpc-subnets" at
 	// https://cloud.ibm.com/docs/containers?topic=containers-vpc-lbaas
-	// specifically "service.kubernetes.io/ibm-load-balancer-cloud-provider-vpc-subnets" annotation
 	//
 	// +optional
 	Subnets string `json:"subnets,omitempty"`

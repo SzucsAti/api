@@ -299,11 +299,13 @@ spec:
                               details about their defaults."
                             properties:
                               subnets:
-                                description: subnets is the list of subnet ids that
-                                  the load balancer is attached to. See IBM Cloud
-                                  documentation https://cloud.ibm.com/docs/containers?topic=containers-vpc-lbaas
-                                  specifically "service.kubernetes.io/ibm-load-balancer-cloud-provider-vpc-subnets"
-                                  annotation
+                                description: "subnets is the comma-separated list
+                                  of subnets that the load balancer is attached to.
+                                  \n It is used to specify one or more subnets in
+                                  one zone that the VPC load balancer deploys to.
+                                  Values can be specified as VPC subnet IDs, VPC subnet
+                                  names, or VPC subnet CIDRs. \n See \"service.kubernetes.io/ibm-load-balancer-cloud-provider-vpc-subnets\"
+                                  at https://cloud.ibm.com/docs/containers?topic=containers-vpc-lbaas"
                                 type: string
                             type: object
                           type:
@@ -1561,11 +1563,13 @@ spec:
                               details about their defaults."
                             properties:
                               subnets:
-                                description: subnets is the list of subnet ids that
-                                  the load balancer is attached to. See IBM Cloud
-                                  documentation https://cloud.ibm.com/docs/containers?topic=containers-vpc-lbaas
-                                  specifically "service.kubernetes.io/ibm-load-balancer-cloud-provider-vpc-subnets"
-                                  annotation
+                                description: "subnets is the comma-separated list
+                                  of subnets that the load balancer is attached to.
+                                  \n It is used to specify one or more subnets in
+                                  one zone that the VPC load balancer deploys to.
+                                  Values can be specified as VPC subnet IDs, VPC subnet
+                                  names, or VPC subnet CIDRs. \n See \"service.kubernetes.io/ibm-load-balancer-cloud-provider-vpc-subnets\"
+                                  at https://cloud.ibm.com/docs/containers?topic=containers-vpc-lbaas"
                                 type: string
                             type: object
                           type:

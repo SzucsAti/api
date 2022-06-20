@@ -633,7 +633,7 @@ func (HostNetworkStrategy) SwaggerDoc() map[string]string {
 
 var map_IBMLoadBalancerParameters = map[string]string{
 	"":        "IBMLoadBalancerParameters provides configuration settings that are specific to IBM Cloud load balancers.",
-	"subnets": "subnets is the list of subnet ids that the load balancer is attached to. See IBM Cloud documentation https://cloud.ibm.com/docs/containers?topic=containers-vpc-lbaas specifically \"service.kubernetes.io/ibm-load-balancer-cloud-provider-vpc-subnets\" annotation",
+	"subnets": "subnets is the comma-separated list of subnets that the load balancer is attached to.\n\nIt is used to specify one or more subnets in one zone that the VPC load balancer deploys to. Values can be specified as VPC subnet IDs, VPC subnet names, or VPC subnet CIDRs.\n\nSee \"service.kubernetes.io/ibm-load-balancer-cloud-provider-vpc-subnets\" at https://cloud.ibm.com/docs/containers?topic=containers-vpc-lbaas",
 }
 
 func (IBMLoadBalancerParameters) SwaggerDoc() map[string]string {
