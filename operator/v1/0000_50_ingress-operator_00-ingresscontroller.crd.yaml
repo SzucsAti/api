@@ -234,6 +234,11 @@ spec:
                                 - Local
                                 type: string
                             type: object
+                          ibm:
+                            properties:
+                              proxyProtocol:
+                                type: boolean
+                            type: object
                           type:
                             description: type is the underlying infrastructure provider
                               for the load balancer. Allowed values are "AWS", "Azure",
@@ -1322,6 +1327,11 @@ spec:
                                 - Global
                                 - Local
                                 type: string
+                            type: object
+                          ibm:
+                            properties:
+                              proxyProtocol:
+                                type: boolean
                             type: object
                           type:
                             description: type is the underlying infrastructure provider

@@ -396,6 +396,8 @@ type ProviderLoadBalancerParameters struct {
 	//
 	// +optional
 	GCP *GCPLoadBalancerParameters `json:"gcp,omitempty"`
+
+	IBM *IBMLoadBalancerParameters `json:"ibm,omitempty"`
 }
 
 // LoadBalancerProviderType is the underlying infrastructure provider for the
@@ -503,6 +505,10 @@ type AWSClassicLoadBalancerParameters struct {
 // AWSNetworkLoadBalancerParameters holds configuration parameters for an
 // AWS Network load balancer.
 type AWSNetworkLoadBalancerParameters struct {
+}
+
+type IBMLoadBalancerParameters struct {
+	ProxyProtocol bool `json:"proxyProtocol,omitempty"`
 }
 
 // HostNetworkStrategy holds parameters for the HostNetwork endpoint publishing
