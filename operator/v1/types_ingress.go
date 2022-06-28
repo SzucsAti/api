@@ -538,6 +538,26 @@ type IBMLoadBalancerParameters struct {
 	//
 	// +optional
 	Subnets string `json:"subnets,omitempty"`
+
+	// enableFeatures can be used to enable features on IBMCloud loadbalancers
+	//
+	// See "service.kubernetes.io/ibm-load-balancer-cloud-provider-enable-features" at
+	// https://cloud.ibm.com/docs/containers?topic=containers-vpc-lbaas
+	//
+	// +optional
+	EnableFeatures *IBMEnableFeatures `json:"enableFeatures,omitempty"`
+}
+
+// IBMEnableFeatures is a way to enable an IBM specific features on the loadbalancer
+type IBMEnableFeatures struct {
+	// Enable PROXY protocol on the loadbalancer. The load balancer passes client connection information, including the client IP address,
+	// the proxy server IP address, and both port numbers, in request headers to your back-end app.
+	//
+	// See "service.kubernetes.io/ibm-load-balancer-cloud-provider-enable-features: "proxy-protocol"" at
+	// https://cloud.ibm.com/docs/containers?topic=containers-vpc-lbaas
+	//
+	// +optional
+	ProxyProtocol bool `json:"proxyProtocol,omitempty"`
 }
 
 // AWSClassicLoadBalancerParameters holds configuration parameters for an

@@ -631,9 +631,19 @@ func (HostNetworkStrategy) SwaggerDoc() map[string]string {
 	return map_HostNetworkStrategy
 }
 
+var map_IBMEnableFeatures = map[string]string{
+	"":              "IBMEnableFeatures is a way to enable an IBM specific features on the loadbalancer",
+	"proxyProtocol": "Enable PROXY protocol on the loadbalancer. The load balancer passes client connection information, including the client IP address, the proxy server IP address, and both port numbers, in request headers to your back-end app.\n\nSee \"service.kubernetes.io/ibm-load-balancer-cloud-provider-enable-features: \"proxy-protocol\"\" at https://cloud.ibm.com/docs/containers?topic=containers-vpc-lbaas",
+}
+
+func (IBMEnableFeatures) SwaggerDoc() map[string]string {
+	return map_IBMEnableFeatures
+}
+
 var map_IBMLoadBalancerParameters = map[string]string{
-	"":        "IBMLoadBalancerParameters provides configuration settings that are specific to IBM Cloud load balancers.",
-	"subnets": "subnets is the comma-separated list of subnets that the load balancer is attached to.\n\nIt is used to specify one or more subnets in one zone that the VPC load balancer deploys to. Values can be specified as VPC subnet IDs, VPC subnet names, or VPC subnet CIDRs.\n\nSee \"service.kubernetes.io/ibm-load-balancer-cloud-provider-vpc-subnets\" at https://cloud.ibm.com/docs/containers?topic=containers-vpc-lbaas",
+	"":               "IBMLoadBalancerParameters provides configuration settings that are specific to IBM Cloud load balancers.",
+	"subnets":        "subnets is the comma-separated list of subnets that the load balancer is attached to.\n\nIt is used to specify one or more subnets in one zone that the VPC load balancer deploys to. Values can be specified as VPC subnet IDs, VPC subnet names, or VPC subnet CIDRs.\n\nSee \"service.kubernetes.io/ibm-load-balancer-cloud-provider-vpc-subnets\" at https://cloud.ibm.com/docs/containers?topic=containers-vpc-lbaas",
+	"enableFeatures": "enableFeatures can be used to enable features on IBMCloud loadbalancers\n\nSee \"service.kubernetes.io/ibm-load-balancer-cloud-provider-enable-features\" at https://cloud.ibm.com/docs/containers?topic=containers-vpc-lbaas",
 }
 
 func (IBMLoadBalancerParameters) SwaggerDoc() map[string]string {

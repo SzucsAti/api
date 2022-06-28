@@ -298,6 +298,20 @@ spec:
                               defaults will be applied. See specific ibm fields for
                               details about their defaults."
                             properties:
+                              enableFeatures:
+                                description: "enableFeatures can be used to enable
+                                  features on IBMCloud loadbalancers \n See \"service.kubernetes.io/ibm-load-balancer-cloud-provider-enable-features\"
+                                  at https://cloud.ibm.com/docs/containers?topic=containers-vpc-lbaas"
+                                properties:
+                                  proxyProtocol:
+                                    description: "Enable PROXY protocol on the loadbalancer.
+                                      The load balancer passes client connection information,
+                                      including the client IP address, the proxy server
+                                      IP address, and both port numbers, in request
+                                      headers to your back-end app. \n See \"service.kubernetes.io/ibm-load-balancer-cloud-provider-enable-features:
+                                      \"proxy-protocol\"\" at https://cloud.ibm.com/docs/containers?topic=containers-vpc-lbaas"
+                                    type: boolean
+                                type: object
                               subnets:
                                 description: "subnets is the comma-separated list
                                   of subnets that the load balancer is attached to.
@@ -1562,6 +1576,20 @@ spec:
                               defaults will be applied. See specific ibm fields for
                               details about their defaults."
                             properties:
+                              enableFeatures:
+                                description: "enableFeatures can be used to enable
+                                  features on IBMCloud loadbalancers \n See \"service.kubernetes.io/ibm-load-balancer-cloud-provider-enable-features\"
+                                  at https://cloud.ibm.com/docs/containers?topic=containers-vpc-lbaas"
+                                properties:
+                                  proxyProtocol:
+                                    description: "Enable PROXY protocol on the loadbalancer.
+                                      The load balancer passes client connection information,
+                                      including the client IP address, the proxy server
+                                      IP address, and both port numbers, in request
+                                      headers to your back-end app. \n See \"service.kubernetes.io/ibm-load-balancer-cloud-provider-enable-features:
+                                      \"proxy-protocol\"\" at https://cloud.ibm.com/docs/containers?topic=containers-vpc-lbaas"
+                                    type: boolean
+                                type: object
                               subnets:
                                 description: "subnets is the comma-separated list
                                   of subnets that the load balancer is attached to.
