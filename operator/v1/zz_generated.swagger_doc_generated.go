@@ -506,7 +506,8 @@ func (EtcdList) SwaggerDoc() map[string]string {
 }
 
 var map_AWSClassicLoadBalancerParameters = map[string]string{
-	"": "AWSClassicLoadBalancerParameters holds configuration parameters for an AWS Classic load balancer.",
+	"":                      "AWSClassicLoadBalancerParameters holds configuration parameters for an AWS Classic load balancer.",
+	"connectionIdleTimeout": "connectionIdleTimeout specifies the maximum time period that a connection may be idle before the load balancer closes the connection.  The value must be parseable as a time duration value; see <https://pkg.go.dev/time#ParseDuration>.  A nil or zero value means no opinion, in which case a default value is used.  The default value for this field is 60s.  This default is subject to change.",
 }
 
 func (AWSClassicLoadBalancerParameters) SwaggerDoc() map[string]string {
@@ -596,12 +597,34 @@ func (HTTPCompressionPolicy) SwaggerDoc() map[string]string {
 }
 
 var map_HostNetworkStrategy = map[string]string{
-	"":         "HostNetworkStrategy holds parameters for the HostNetwork endpoint publishing strategy.",
-	"protocol": "protocol specifies whether the IngressController expects incoming connections to use plain TCP or whether the IngressController expects PROXY protocol.\n\nPROXY protocol can be used with load balancers that support it to communicate the source addresses of client connections when forwarding those connections to the IngressController.  Using PROXY protocol enables the IngressController to report those source addresses instead of reporting the load balancer's address in HTTP headers and logs.  Note that enabling PROXY protocol on the IngressController will cause connections to fail if you are not using a load balancer that uses PROXY protocol to forward connections to the IngressController.  See http://www.haproxy.org/download/2.2/doc/proxy-protocol.txt for information about PROXY protocol.\n\nThe following values are valid for this field:\n\n* The empty string. * \"TCP\". * \"PROXY\".\n\nThe empty string specifies the default, which is TCP without PROXY protocol.  Note that the default is subject to change.",
+	"":          "HostNetworkStrategy holds parameters for the HostNetwork endpoint publishing strategy.",
+	"protocol":  "protocol specifies whether the IngressController expects incoming connections to use plain TCP or whether the IngressController expects PROXY protocol.\n\nPROXY protocol can be used with load balancers that support it to communicate the source addresses of client connections when forwarding those connections to the IngressController.  Using PROXY protocol enables the IngressController to report those source addresses instead of reporting the load balancer's address in HTTP headers and logs.  Note that enabling PROXY protocol on the IngressController will cause connections to fail if you are not using a load balancer that uses PROXY protocol to forward connections to the IngressController.  See http://www.haproxy.org/download/2.2/doc/proxy-protocol.txt for information about PROXY protocol.\n\nThe following values are valid for this field:\n\n* The empty string. * \"TCP\". * \"PROXY\".\n\nThe empty string specifies the default, which is TCP without PROXY protocol.  Note that the default is subject to change.",
+	"httpPort":  "httpPort is the port on the host which should be used to listen for HTTP requests. This field should be set when port 80 is already in use. The value should not coincide with the NodePort range of the cluster. When the value is 0 or is not specified it defaults to 80.",
+	"httpsPort": "httpsPort is the port on the host which should be used to listen for HTTPS requests. This field should be set when port 443 is already in use. The value should not coincide with the NodePort range of the cluster. When the value is 0 or is not specified it defaults to 443.",
+	"statsPort": "statsPort is the port on the host where the stats from the router are published. The value should not coincide with the NodePort range of the cluster. If an external load balancer is configured to forward connections to this IngressController, the load balancer should use this port for health checks. The load balancer can send HTTP probes on this port on a given node, with the path /healthz/ready to determine if the ingress controller is ready to receive traffic on the node. For proper operation the load balancer must not forward traffic to a node until the health check reports ready. The load balancer should also stop forwarding requests within a maximum of 45 seconds after /healthz/ready starts reporting not-ready. Probing every 5 to 10 seconds, with a 5-second timeout and with a threshold of two successful or failed requests to become healthy or unhealthy respectively, are well-tested values. When the value is 0 or is not specified it defaults to 1936.",
 }
 
 func (HostNetworkStrategy) SwaggerDoc() map[string]string {
 	return map_HostNetworkStrategy
+}
+
+var map_IBMEnableFeatures = map[string]string{
+	"":              "IBMEnableFeatures is a way to enable an IBM specific features on the loadbalancer",
+	"proxyProtocol": "Enable PROXY protocol on the loadbalancer. The load balancer passes client connection information, including the client IP address, the proxy server IP address, and both port numbers, in request headers to your back-end app.\n\nSee \"service.kubernetes.io/ibm-load-balancer-cloud-provider-enable-features: \"proxy-protocol\"\" at https://cloud.ibm.com/docs/containers?topic=containers-vpc-lbaas",
+}
+
+func (IBMEnableFeatures) SwaggerDoc() map[string]string {
+	return map_IBMEnableFeatures
+}
+
+var map_IBMLoadBalancerParameters = map[string]string{
+	"":               "IBMLoadBalancerParameters provides configuration settings that are specific to IBM Cloud load balancers.",
+	"subnets":        "subnets is the comma-separated list of subnets that the load balancer is attached to.\n\nIt is used to specify one or more subnets in one zone that the VPC load balancer deploys to. Values can be specified as VPC subnet IDs, VPC subnet names, or VPC subnet CIDRs.\n\nSee \"service.kubernetes.io/ibm-load-balancer-cloud-provider-vpc-subnets\" at https://cloud.ibm.com/docs/containers?topic=containers-vpc-lbaas",
+	"enableFeatures": "enableFeatures can be used to enable features on IBMCloud loadbalancers\n\nSee \"service.kubernetes.io/ibm-load-balancer-cloud-provider-enable-features\" at https://cloud.ibm.com/docs/containers?topic=containers-vpc-lbaas",
+}
+
+func (IBMLoadBalancerParameters) SwaggerDoc() map[string]string {
+	return map_IBMLoadBalancerParameters
 }
 
 var map_IngressController = map[string]string{
@@ -799,9 +822,10 @@ func (PrivateStrategy) SwaggerDoc() map[string]string {
 
 var map_ProviderLoadBalancerParameters = map[string]string{
 	"":     "ProviderLoadBalancerParameters holds desired load balancer information specific to the underlying infrastructure provider.",
-	"type": "type is the underlying infrastructure provider for the load balancer. Allowed values are \"AWS\", \"Azure\", \"BareMetal\", \"GCP\", \"OpenStack\", and \"VSphere\".",
+	"type": "type is the underlying infrastructure provider for the load balancer. Allowed values are \"AWS\", \"Azure\", \"BareMetal\", \"GCP\", \"IBM\", \"Nutanix\", \"OpenStack\", and \"VSphere\".",
 	"aws":  "aws provides configuration settings that are specific to AWS load balancers.\n\nIf empty, defaults will be applied. See specific aws fields for details about their defaults.",
 	"gcp":  "gcp provides configuration settings that are specific to GCP load balancers.\n\nIf empty, defaults will be applied. See specific gcp fields for details about their defaults.",
+	"ibm":  "ibm provides configuration settings that are specific to IBM Cloud load balancers.\n\nIf empty, defaults will be applied. See specific ibm fields for details about their defaults.",
 }
 
 func (ProviderLoadBalancerParameters) SwaggerDoc() map[string]string {

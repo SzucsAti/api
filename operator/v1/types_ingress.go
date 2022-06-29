@@ -371,8 +371,8 @@ type LoadBalancerStrategy struct {
 // +union
 type ProviderLoadBalancerParameters struct {
 	// type is the underlying infrastructure provider for the load balancer.
-	// Allowed values are "AWS", "Azure", "BareMetal", "GCP", "OpenStack",
-	// and "VSphere".
+	// Allowed values are "AWS", "Azure", "BareMetal", "GCP", "IBM", "Nutanix",
+	// "OpenStack", and "VSphere".
 	//
 	// +unionDiscriminator
 	// +kubebuilder:validation:Required
@@ -396,13 +396,22 @@ type ProviderLoadBalancerParameters struct {
 	//
 	// +optional
 	GCP *GCPLoadBalancerParameters `json:"gcp,omitempty"`
+
+	// ibm provides configuration settings that are specific to IBM Cloud
+	// load balancers.
+	//
+	// If empty, defaults will be applied. See specific ibm fields for
+	// details about their defaults.
+	//
+	// +optional
+	IBM *IBMLoadBalancerParameters `json:"ibm,omitempty"`
 }
 
 // LoadBalancerProviderType is the underlying infrastructure provider for the
-// load balancer. Allowed values are "AWS", "Azure", "BareMetal", "GCP",
+// load balancer. Allowed values are "AWS", "Azure", "BareMetal", "GCP", "IBM", "Nutanix",
 // "OpenStack", and "VSphere".
 //
-// +kubebuilder:validation:Enum=AWS;Azure;BareMetal;GCP;OpenStack;VSphere;IBM
+// +kubebuilder:validation:Enum=AWS;Azure;BareMetal;GCP;Nutanix;OpenStack;VSphere;IBM
 type LoadBalancerProviderType string
 
 const (
@@ -414,6 +423,7 @@ const (
 	IBMLoadBalancerProvider          LoadBalancerProviderType = "IBM"
 	BareMetalLoadBalancerProvider    LoadBalancerProviderType = "BareMetal"
 	AlibabaCloudLoadBalancerProvider LoadBalancerProviderType = "AlibabaCloud"
+	NutanixLoadBalancerProvider      LoadBalancerProviderType = "Nutanix"
 )
 
 // AWSLoadBalancerParameters provides configuration settings that are
@@ -495,9 +505,55 @@ const (
 	GCPLocalAccess  GCPClientAccess = "Local"
 )
 
+// IBMLoadBalancerParameters provides configuration settings that are
+// specific to IBM Cloud load balancers.
+type IBMLoadBalancerParameters struct {
+	// subnets is the comma-separated list of subnets that the load balancer is attached to.
+	//
+	// It is used to specify one or more subnets in one zone that the VPC load balancer deploys to.
+	// Values can be specified as VPC subnet IDs, VPC subnet names, or VPC subnet CIDRs.
+	//
+	// See "service.kubernetes.io/ibm-load-balancer-cloud-provider-vpc-subnets" at
+	// https://cloud.ibm.com/docs/containers?topic=containers-vpc-lbaas
+	//
+	// +optional
+	Subnets string `json:"subnets,omitempty"`
+
+	// enableFeatures can be used to enable features on IBMCloud loadbalancers
+	//
+	// See "service.kubernetes.io/ibm-load-balancer-cloud-provider-enable-features" at
+	// https://cloud.ibm.com/docs/containers?topic=containers-vpc-lbaas
+	//
+	// +optional
+	EnableFeatures *IBMEnableFeatures `json:"enableFeatures,omitempty"`
+}
+
+// IBMEnableFeatures is a way to enable an IBM specific features on the loadbalancer
+type IBMEnableFeatures struct {
+	// Enable PROXY protocol on the loadbalancer. The load balancer passes client connection information, including the client IP address,
+	// the proxy server IP address, and both port numbers, in request headers to your back-end app.
+	//
+	// See "service.kubernetes.io/ibm-load-balancer-cloud-provider-enable-features: "proxy-protocol"" at
+	// https://cloud.ibm.com/docs/containers?topic=containers-vpc-lbaas
+	//
+	// +optional
+	ProxyProtocol bool `json:"proxyProtocol,omitempty"`
+}
+
 // AWSClassicLoadBalancerParameters holds configuration parameters for an
 // AWS Classic load balancer.
 type AWSClassicLoadBalancerParameters struct {
+	// connectionIdleTimeout specifies the maximum time period that a
+	// connection may be idle before the load balancer closes the
+	// connection.  The value must be parseable as a time duration value;
+	// see <https://pkg.go.dev/time#ParseDuration>.  A nil or zero value
+	// means no opinion, in which case a default value is used.  The default
+	// value for this field is 60s.  This default is subject to change.
+	//
+	// +kubebuilder:validation:Optional
+	// +kubebuilder:validation:Format=duration
+	// +optional
+	ConnectionIdleTimeout metav1.Duration `json:"connectionIdleTimeout,omitempty"`
 }
 
 // AWSNetworkLoadBalancerParameters holds configuration parameters for an
@@ -536,6 +592,49 @@ type HostNetworkStrategy struct {
 	// +kubebuilder:validation:Optional
 	// +optional
 	Protocol IngressControllerProtocol `json:"protocol,omitempty"`
+
+	// httpPort is the port on the host which should be used to listen for
+	// HTTP requests. This field should be set when port 80 is already in use.
+	// The value should not coincide with the NodePort range of the cluster.
+	// When the value is 0 or is not specified it defaults to 80.
+	// +kubebuilder:validation:Optional
+	// +kubebuilder:validation:Maximum=65535
+	// +kubebuilder:validation:Minimum=0
+	// +kubebuilder:default=80
+	// +optional
+	HTTPPort int32 `json:"httpPort,omitempty"`
+
+	// httpsPort is the port on the host which should be used to listen for
+	// HTTPS requests. This field should be set when port 443 is already in use.
+	// The value should not coincide with the NodePort range of the cluster.
+	// When the value is 0 or is not specified it defaults to 443.
+	// +kubebuilder:validation:Optional
+	// +kubebuilder:validation:Maximum=65535
+	// +kubebuilder:validation:Minimum=0
+	// +kubebuilder:default=443
+	// +optional
+	HTTPSPort int32 `json:"httpsPort,omitempty"`
+
+	// statsPort is the port on the host where the stats from the router are
+	// published. The value should not coincide with the NodePort range of the
+	// cluster. If an external load balancer is configured to forward connections
+	// to this IngressController, the load balancer should use this port for
+	// health checks. The load balancer can send HTTP probes on this port on a
+	// given node, with the path /healthz/ready to determine if the ingress
+	// controller is ready to receive traffic on the node. For proper operation
+	// the load balancer must not forward traffic to a node until the health
+	// check reports ready. The load balancer should also stop forwarding requests
+	// within a maximum of 45 seconds after /healthz/ready starts reporting
+	// not-ready. Probing every 5 to 10 seconds, with a 5-second timeout and with
+	// a threshold of two successful or failed requests to become healthy or
+	// unhealthy respectively, are well-tested values. When the value is 0 or
+	// is not specified it defaults to 1936.
+	// +kubebuilder:validation:Optional
+	// +kubebuilder:validation:Maximum=65535
+	// +kubebuilder:validation:Minimum=0
+	// +kubebuilder:default=1936
+	// +optional
+	StatsPort int32 `json:"statsPort,omitempty"`
 }
 
 // PrivateStrategy holds parameters for the Private endpoint publishing
