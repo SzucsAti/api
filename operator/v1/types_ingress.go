@@ -391,7 +391,7 @@ type LoadBalancerStrategy struct {
 // +union
 type ProviderLoadBalancerParameters struct {
 	// type is the underlying infrastructure provider for the load balancer.
-	// Allowed values are "AWS", "Azure", "BareMetal", "GCP", "Nutanix",
+	// Allowed values are "AWS", "Azure", "BareMetal", "GCP", "IBM", "Nutanix",
 	// "OpenStack", and "VSphere".
 	//
 	// +unionDiscriminator
@@ -416,10 +416,19 @@ type ProviderLoadBalancerParameters struct {
 	//
 	// +optional
 	GCP *GCPLoadBalancerParameters `json:"gcp,omitempty"`
+
+	// ibm provides configuration settings that are specific to IBM Cloud
+	// load balancers.
+	//
+	// If empty, defaults will be applied. See specific ibm fields for
+	// details about their defaults.
+	//
+	// +optional
+	IBM *IBMLoadBalancerParameters `json:"ibm,omitempty"`
 }
 
 // LoadBalancerProviderType is the underlying infrastructure provider for the
-// load balancer. Allowed values are "AWS", "Azure", "BareMetal", "GCP", "Nutanix",
+// load balancer. Allowed values are "AWS", "Azure", "BareMetal", "GCP", "IBM", "Nutanix",
 // "OpenStack", and "VSphere".
 //
 // +kubebuilder:validation:Enum=AWS;Azure;BareMetal;GCP;Nutanix;OpenStack;VSphere;IBM
@@ -515,6 +524,41 @@ const (
 	GCPGlobalAccess GCPClientAccess = "Global"
 	GCPLocalAccess  GCPClientAccess = "Local"
 )
+
+// IBMLoadBalancerParameters provides configuration settings that are
+// specific to IBM Cloud load balancers.
+type IBMLoadBalancerParameters struct {
+	// subnets is the comma-separated list of subnets that the load balancer is attached to.
+	//
+	// It is used to specify one or more subnets in one zone that the VPC load balancer deploys to.
+	// Values can be specified as VPC subnet IDs, VPC subnet names, or VPC subnet CIDRs.
+	//
+	// See "service.kubernetes.io/ibm-load-balancer-cloud-provider-vpc-subnets" at
+	// https://cloud.ibm.com/docs/containers?topic=containers-vpc-lbaas
+	//
+	// +optional
+	Subnets string `json:"subnets,omitempty"`
+
+	// enableFeatures can be used to enable features on IBMCloud loadbalancers
+	//
+	// See "service.kubernetes.io/ibm-load-balancer-cloud-provider-enable-features" at
+	// https://cloud.ibm.com/docs/containers?topic=containers-vpc-lbaas
+	//
+	// +optional
+	EnableFeatures *IBMEnableFeatures `json:"enableFeatures,omitempty"`
+}
+
+// IBMEnableFeatures is a way to enable an IBM specific features on the loadbalancer
+type IBMEnableFeatures struct {
+	// Enable PROXY protocol on the loadbalancer. The load balancer passes client connection information, including the client IP address,
+	// the proxy server IP address, and both port numbers, in request headers to your back-end app.
+	//
+	// See "service.kubernetes.io/ibm-load-balancer-cloud-provider-enable-features: "proxy-protocol"" at
+	// https://cloud.ibm.com/docs/containers?topic=containers-vpc-lbaas
+	//
+	// +optional
+	ProxyProtocol bool `json:"proxyProtocol,omitempty"`
+}
 
 // AWSClassicLoadBalancerParameters holds configuration parameters for an
 // AWS Classic load balancer.
